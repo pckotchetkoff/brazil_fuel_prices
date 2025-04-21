@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta 
+from datetime import datetime, timedelta
 import os
 import tempfile
 from urllib3.exceptions import IncompleteRead
@@ -10,7 +10,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-OUTPUT_PIPELINE_BUCKET = f'{os.environ["PIPELINE_BUCKET"]}/fuel_data'
+PIPELINE_BUCKET = os.environ['PIPELINE_BUCKET']
 BASE_URL = 'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/shpc/dsas/ca/ca-{0}-{1}.csv'
 
 
@@ -63,13 +63,13 @@ def download_fuel_data():
             url = BASE_URL.format(year, semester)
             output_file_name = f'fuel_prices_{year}_{semester}.csv'
 
-            if check_file_exists(OUTPUT_PIPELINE_BUCKET, output_file_name):
+            if check_file_exists(PIPELINE_BUCKET, output_file_name):
                 print(f'File {output_file_name} already exists in GCS, skipping download.')
                 continue
 
             try:
                 tmp_file_path = download_with_retry(url)
-                upload_from_temp_file(OUTPUT_PIPELINE_BUCKET, output_file_name, tmp_file_path)
+                upload_from_temp_file(PIPELINE_BUCKET, output_file_name, tmp_file_path)
                 os.unlink(tmp_file_path)  # Clean up temp file
             except Exception as e:
                 print(f'Error processing {url}: {e}')
