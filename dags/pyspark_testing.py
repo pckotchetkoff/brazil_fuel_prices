@@ -34,13 +34,13 @@ CLUSTER_NAME = 'etl-spark-cluster-{{ ds_nodash }}'
 CLUSTER_CONFIG = {
     'master_config': {
         'num_instances': 1,
-        'machine_type_uri': 'n1-standard-4',
-        'disk_config': {'boot_disk_type': 'pd-standard', 'boot_disk_size_gb': 500},
+        'machine_type_uri': 'n1-standard-2',
+        # 'disk_config': {'boot_disk_type': 'pd-standard', 'boot_disk_size_gb': 500},
     },
     'worker_config': {
         'num_instances': 2,
-        'machine_type_uri': 'n1-standard-4',
-        'disk_config': {'boot_disk_type': 'pd-standard', 'boot_disk_size_gb': 500},
+        'machine_type_uri': 'n1-standard-2',
+        # 'disk_config': {'boot_disk_type': 'pd-standard', 'boot_disk_size_gb': 500},
     },
     'software_config': {
         'image_version': '2.1-debian11',
