@@ -34,7 +34,7 @@ CLUSTER_NAME = 'etl-spark-cluster-{{ ds_nodash }}'
 CLUSTER_CONFIG = {
     'master_config': {
         'num_instances': 1,
-        'machine_type_uri': 'n1-standard-2',
+        'machine_type_uri': 'n1-standard-1',
         # 'disk_config': {'boot_disk_type': 'pd-standard', 'boot_disk_size_gb': 500},
     },
     'worker_config': {
@@ -44,11 +44,11 @@ CLUSTER_CONFIG = {
     },
     'software_config': {
         'image_version': '2.1-debian11',
-        'properties': {
-            'spark:spark.executor.memory': '3g',
-            'spark:spark.driver.memory': '4g',
-            'spark:spark.executor.cores': '2',
-        },
+        # 'properties': {
+        #     'spark:spark.executor.memory': '3g',
+        #     'spark:spark.driver.memory': '4g',
+        #     'spark:spark.executor.cores': '2',
+        # },
     },
     'gce_cluster_config': {
         'service_account': COMPOSER_SA,
