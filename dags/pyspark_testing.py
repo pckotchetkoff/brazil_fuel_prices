@@ -48,7 +48,7 @@ CLUSTER_CONFIG = {
         'disk_config': {'boot_disk_type': 'pd-standard', 'boot_disk_size_gb': 30},
     },
     'software_config': {
-        'image_version': '2.1-debian10',
+        'image_version': '2.1-debian11',
         'properties': {
             'spark:spark.executor.memory': '1g',
             'spark:spark.driver.memory': '2g',
