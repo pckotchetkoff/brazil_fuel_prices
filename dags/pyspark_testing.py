@@ -77,8 +77,8 @@ PYSPARK_JOB = {
 }
 
 def _print_execution_date(**kwargs):
-    print(f'Execution date: {kwargs['execution_date']}')
-    return f'Execution date: {kwargs['execution_date']}'
+    print(f'Execution date: {kwargs["execution_date"]}')
+    return f'Execution date: {kwargs["execution_date"]}'
 
 
 with DAG(
