@@ -6,7 +6,7 @@ from pyspark.sql import SparkSession
 # from pyspark.sql.functions import col, to_date, year, month, current_timestamp, lit
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(filename)s: %(message)s')
 
 def main():
     if len(sys.argv) != 5:
@@ -51,6 +51,9 @@ def main():
         print(f'Successfully read data from {input_path}')
         print(f'Schema: {df.schema}')
         print(f'Row count: {df.count()}')
+
+        logger.info('Sample data:')
+        df.show(5, truncate=False)
         
         df.write \
             .format('bigquery') \
