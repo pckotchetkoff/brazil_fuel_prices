@@ -3,10 +3,41 @@ import os
 import sys
 
 from pyspark.sql import SparkSession
-# from pyspark.sql.functions import col, to_date, year, month, current_timestamp, lit
+from pyspark.sql import functions as F
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format='%(filename)s: %(message)s')
+
+
+def rename_df_columns(df):
+    columns = {
+        'Regiao - Sigla': 'region',
+        'Estado - Sigla': 'state',
+        'Municipio': 'city',
+        'Revenda': 'reseller',
+        'CNPJ da Revenda': 'reseller_doc',
+        'Nome da Rua': 'street_name',
+        'Numero Rua': 'street_number',
+        'Complemento': 'address_complement',
+        'Bairro': 'neighbourhood',
+        'Cep': 'zip_code',
+        'Produto': 'product',
+        'Data da Coleta': 'price_collection_date',
+        'Valor de Venda': 'reseller_to_customer_sale_price',
+        'Valor de Compra': 'distributor_to_reseller_sale_price',
+        'Unidade de Medida': 'unit_of_measure',
+        'Bandeira': 'distributor',
+    }
+
+    for col, repl in columns.items():
+        df = df.withColumnRenamed(col, repl)
+
+    return df
+
+
+def parse_column_to_float(df, column, chunk_size=10000):
+    return df.withColumn(column, F.regexp_replace(F.col(column), ',', '.').cast('float'))
+
 
 def main():
     if len(sys.argv) != 5:
@@ -48,9 +79,20 @@ def main():
         ) \
         .csv(input_path)
         
-        print(f'Successfully read data from {input_path}')
-        print(f'Schema: {df.schema}')
-        print(f'Row count: {df.count()}')
+        logger.info(f'Successfully read data from {input_path}')
+        # logger.info(f'Row count: {df.count()}')
+
+        df = rename_df_columns(df)
+
+        logger.info(f'Length before dropping null values: {df.count()}')
+        df = df.dropna(subset=['reseller_to_customer_sale_price', 'distributor_to_reseller_sale_price'], how='any')
+        logger.info(f'Length after dropping null values: {df.count()}')
+        
+        logger.info(f'Schema: {df.schema}')
+
+        df = parse_column_to_float(df, 'reseller_to_customer_sale_price')
+        df = parse_column_to_float(df, 'distributor_to_reseller_sale_price')
+        df = df.withColumn('price_collection_date', F.to_date('price_collection_date', 'd/M/y'))
 
         logger.info('Sample data:')
         df.show(5, truncate=False)
